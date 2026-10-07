@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JavaScript Form Validation</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #success {
+            color: green;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Registration Form</h2>
+
+        <form id="registrationForm">
+
+            <!-- Name -->
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+                <span class="error" id="nameError"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" placeholder="Enter your email">
+                <span class="error" id="emailError"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <span class="error" id="passwordError"></span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword"
+                       placeholder="Re-enter password">
+                <span class="error" id="confirmPasswordError"></span>
+            </div>
+
+            <!-- Age -->
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" placeholder="Enter your age">
+                <span class="error" id="ageError"></span>
+            </div>
+
+            <button type="submit">Register</button>
+
+            <p id="success"></p>
+
+        </form>
+
+    </div>
+
+    <script>
+
+        document.getElementById("registrationForm")
+            .addEventListener("submit", function(event) {
+
+            // Prevent form submission
+            event.preventDefault();
+
+            // Get values
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value;
+            let confirmPassword =
+                document.getElementById("confirmPassword").value;
+            let age = document.getElementById("age").value.trim();
+
+            // Error elements
+            let nameError = document.getElementById("nameError");
+            let emailError = document.getElementById("emailError");
+            let passwordError = document.getElementById("passwordError");
+            let confirmPasswordError =
+                document.getElementById("confirmPasswordError");
+            let ageError = document.getElementById("ageError");
+
+            // Clear previous errors
+            nameError.textContent = "";
+            emailError.textContent = "";
+            passwordError.textContent = "";
+            confirmPasswordError.textContent = "";
+            ageError.textContent = "";
+
+            document.getElementById("success").textContent = "";
+
+            let isValid = true;
+
+            // Name validation
+            if (name === "") {
+                nameError.textContent = "Name is required.";
+                isValid = false;
+            } 
+            else if (!/^[A-Za-z ]+$/.test(name)) {
+                nameError.textContent =
+                    "Name should contain only letters.";
+                isValid = false;
+            }
+
+            // Email validation
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email === "") {
+                emailError.textContent = "Email is required.";
+                isValid = false;
+            } 
+            else if (!emailPattern.test(email)) {
+                emailError.textContent =
+                    "Enter a valid email address.";
+                isValid = false;
+            }
+
+            // Password validation
+            if (password === "") {
+                passwordError.textContent =
+                    "Password is required.";
+                isValid = false;
+            } 
+            else if (password.length < 8) {
+                passwordError.textContent =
+                    "Password must be at least 8 characters.";
+                isValid = false;
+            }
+
+            // Confirm password validation
+            if (confirmPassword === "") {
+                confirmPasswordError.textContent =
+                    "Please confirm your password.";
+                isValid = false;
+            } 
+            else if (password !== confirmPassword) {
+                confirmPasswordError.textContent =
+                    "Passwords do not match.";
+                isValid = false;
+            }
+
+            // Age validation
+            if (age === "") {
+                ageError.textContent = "Age is required.";
+                isValid = false;
+            } 
+            else if (isNaN(age) || age < 1 || age > 120) {
+                ageError.textContent =
+                    "Enter a valid age between 1 and 120.";
+                isValid = false;
+            }
+
+            // If everything is valid
+            if (isValid) {
+                document.getElementById("success").textContent =
+                    "Registration successful!";
+
+                // Clear form
+                document.getElementById("registrationForm").reset();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
